@@ -11,14 +11,23 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String _userName = 'Guest User';
-  String _userEmail = 'guest@biteful.app';
+  String _userName = 'Loading...';
+  String _userEmail = 'Loading...';
 
   @override
   void initState() {
     super.initState();
-    _userName = 'Guest User';
-    _userEmail = 'guest@biteful.app';
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    final userData = await DatabaseHelper.instance.fetchUser();
+    if (userData != null && mounted) {
+      setState(() {
+        _userName = userData['name'] as String;
+        _userEmail = userData['email'] as String;
+      });
+    }
   }
 
   void _showEditProfileDialog(BuildContext context) {
@@ -27,13 +36,16 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context) => _EditProfileDialog(
         initialName: _userName,
         initialEmail: _userEmail,
-        onSave: (newName, newEmail) {
+        onSave: (newName, newEmail) async {
+          // 1. Save to Database
+          await DatabaseHelper.instance.updateUser(newName, newEmail);
+          
+          // 2. Update local state and UI
           setState(() {
             _userName = newName;
             _userEmail = newEmail;
           });
 
-          //DB currently only supports food/restaurants, can't update user information in it.
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Profile updated to $newName')),
           );
@@ -70,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _userName,
+                        _userName, 
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
@@ -78,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        _userEmail,
+                        _userEmail, 
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
@@ -89,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.edit),
-                  onPressed: () => _showEditProfileDialog(context),
+                  onPressed: () => _showEditProfileDialog(context), 
                 ),
               ],
             ),
@@ -135,7 +147,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                 );
-
+                
                 if (confirm == true) {
                   await DatabaseHelper.instance.deleteDatabase();
                   if (context.mounted) {
@@ -151,7 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
           ),
-
+          
           // Menu items
           _tile(
             context,
@@ -262,7 +274,7 @@ class __EditProfileDialogState extends State<_EditProfileDialog> {
   void _saveProfile() {
     if (_formKey.currentState!.validate()) {
       widget.onSave(_nameController.text, _emailController.text);
-      Navigator.of(context).pop(); // Close the dialog
+      Navigator.of(context).pop(); 
     }
   }
 
