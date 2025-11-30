@@ -10,6 +10,9 @@ import 'pages/orders_page.dart';
 import 'pages/profile_page.dart';
 import 'pages/track_page.dart';
 import 'pages/notifications_page.dart';
+import 'pages/addresses_page.dart';
+import 'pages/payment_methods_page.dart';
+import 'pages/help_support_page.dart';
 
 GoRouter buildRouter() {
   return GoRouter(
@@ -68,6 +71,18 @@ GoRouter buildRouter() {
       GoRoute(
         path: '/notifications',
         builder: (context, state) => const NotificationsPage(),
+      ),
+      GoRoute(
+        path: '/addresses',
+        builder: (context, state) => const AddressesPage(),
+      ),
+      GoRoute(
+        path: '/payment-methods',
+        builder: (context, state) => const PaymentMethodsPage(),
+      ),
+      GoRoute(
+        path: '/help-support',
+        builder: (context, state) => const HelpSupportPage(),
       ),
     ],
   );

@@ -1,10 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../theme.dart';
-import '../db/database_helper.dart'; // ✅ ADD THIS
+import '../db/database_helper.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  String _userName = 'Guest User';
+  String _userEmail = 'guest@biteful.app';
+
+  @override
+  void initState() {
+    super.initState();
+    _userName = 'Guest User';
+    _userEmail = 'guest@biteful.app';
+  }
+
+  void _showEditProfileDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => _EditProfileDialog(
+        initialName: _userName,
+        initialEmail: _userEmail,
+        onSave: (newName, newEmail) {
+          setState(() {
+            _userName = newName;
+            _userEmail = newEmail;
+          });
+
+          //DB currently only supports food/restaurants, can't update user information in it.
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Profile updated to $newName')),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,21 +65,21 @@ class ProfilePage extends StatelessWidget {
                   child: const Icon(Icons.person, size: 36, color: kPrimary),
                 ),
                 const SizedBox(width: 16),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Guest User',
-                        style: TextStyle(
+                        _userName,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
-                        'guest@biteful.app',
-                        style: TextStyle(
+                        _userEmail,
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
                         ),
@@ -53,11 +89,7 @@ class ProfilePage extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Edit profile coming soon')),
-                    );
-                  },
+                  onPressed: () => _showEditProfileDialog(context),
                 ),
               ],
             ),
@@ -65,7 +97,7 @@ class ProfilePage extends StatelessWidget {
 
           const SizedBox(height: 26),
 
-          // ✅ ADD THIS DEBUG BUTTON
+          // Reset Database Button
           Container(
             margin: const EdgeInsets.only(bottom: 8),
             decoration: BoxDecoration(
@@ -103,7 +135,7 @@ class ProfilePage extends StatelessWidget {
                     ],
                   ),
                 );
-                
+
                 if (confirm == true) {
                   await DatabaseHelper.instance.deleteDatabase();
                   if (context.mounted) {
@@ -119,27 +151,19 @@ class ProfilePage extends StatelessWidget {
               },
             ),
           ),
-          
+
           // Menu items
           _tile(
             context,
             Icons.location_on_outlined,
             'Addresses',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Address management coming soon')),
-              );
-            },
+            onTap: () => context.push('/addresses'),
           ),
           _tile(
             context,
             Icons.credit_card_outlined,
             'Payment Methods',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Payment methods coming soon')),
-              );
-            },
+            onTap: () => context.push('/payment-methods'),
           ),
           _tile(
             context,
@@ -151,11 +175,7 @@ class ProfilePage extends StatelessWidget {
             context,
             Icons.help_outline,
             'Help & Support',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Help & Support coming soon')),
-              );
-            },
+            onTap: () => context.push('/help-support'),
           ),
           _tile(
             context,
@@ -201,6 +221,111 @@ class ProfilePage extends StatelessWidget {
         trailing: const Icon(Icons.chevron_right, color: Colors.grey),
         onTap: onTap,
       ),
+    );
+  }
+}
+
+class _EditProfileDialog extends StatefulWidget {
+  final String initialName;
+  final String initialEmail;
+  final Function(String newName, String newEmail) onSave;
+
+  const _EditProfileDialog({
+    required this.initialName,
+    required this.initialEmail,
+    required this.onSave,
+  });
+
+  @override
+  State<_EditProfileDialog> createState() => __EditProfileDialogState();
+}
+
+class __EditProfileDialogState extends State<_EditProfileDialog> {
+  late TextEditingController _nameController;
+  late TextEditingController _emailController;
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.initialName);
+    _emailController = TextEditingController(text: widget.initialEmail);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void _saveProfile() {
+    if (_formKey.currentState!.validate()) {
+      widget.onSave(_nameController.text, _emailController.text);
+      Navigator.of(context).pop(); // Close the dialog
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Edit Profile'),
+      content: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.email),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your email';
+                  }
+                  // Simple email validation
+                  if (!value.contains('@') || !value.contains('.')) {
+                    return 'Please enter a valid email';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Cancel'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        ElevatedButton(
+          onPressed: _saveProfile,
+          child: const Text('Save'),
+        ),
+      ],
     );
   }
 }
