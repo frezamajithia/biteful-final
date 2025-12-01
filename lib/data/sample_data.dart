@@ -8,6 +8,7 @@ class RestaurantLite {
   final int ratingCount;
   final String distance;
   final List<MenuItem> appetizers;
+  final String category; 
 
   RestaurantLite({
     required this.id,
@@ -19,6 +20,7 @@ class RestaurantLite {
     required this.ratingCount,
     required this.distance,
     required this.appetizers,
+    required this.category, 
   });
 }
 
@@ -44,6 +46,7 @@ final restaurants = <RestaurantLite>[
       MenuItem(title: 'Fries', desc: 'Crispy golden fries', price: 2.49),
       MenuItem(title: 'Onion Rings', desc: 'Crispy rings', price: 3.99),
     ],
+    category: 'Fast Food',
   ),
   RestaurantLite(
     id: 'sushi247',
@@ -59,9 +62,8 @@ final restaurants = <RestaurantLite>[
       MenuItem(title: 'Tuna Nigiri', desc: 'Nigiri with tuna', price: 9.99),
       MenuItem(title: 'Miso Soup', desc: 'Classic miso broth', price: 3.00),
     ],
+    category: 'Japanese',
   ),
-
-  // Added restaurants (reusing available hero images to avoid missing assets)
   RestaurantLite(
     id: 'pizza_palace',
     name: 'Pizza Palace',
@@ -76,6 +78,7 @@ final restaurants = <RestaurantLite>[
       MenuItem(title: 'Pepperoni', desc: 'Crispy pepperoni slices', price: 12.49),
       MenuItem(title: 'Garlic Bread', desc: 'Buttery garlic loaf', price: 4.50),
     ],
+    category: 'Pizza',
   ),
   RestaurantLite(
     id: 'noodle_house',
@@ -91,6 +94,7 @@ final restaurants = <RestaurantLite>[
       MenuItem(title: 'Gyoza', desc: 'Pan-fried dumplings', price: 5.99),
       MenuItem(title: 'Seaweed Salad', desc: 'Umami, sesame dressing', price: 4.25),
     ],
+    category: 'Chinese',
   ),
   RestaurantLite(
     id: 'taco_town',
@@ -106,6 +110,7 @@ final restaurants = <RestaurantLite>[
       MenuItem(title: 'Chicken Quesadilla', desc: 'Melted cheese, salsa', price: 6.75),
       MenuItem(title: 'Churros', desc: 'Cinnamon sugar sticks', price: 3.25),
     ],
+    category: 'Mexican',
   ),
   RestaurantLite(
     id: 'green_bowl',
@@ -121,5 +126,6 @@ final restaurants = <RestaurantLite>[
       MenuItem(title: 'Avocado Toast', desc: 'Sourdough, chili flakes', price: 6.50),
       MenuItem(title: 'Berry Yogurt', desc: 'Granola crunch', price: 4.99),
     ],
+    category: 'Healthy',
   ),
 ];
