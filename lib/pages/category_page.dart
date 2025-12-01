@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/restaurant_card.dart';
 import '../data/sample_data.dart';
 import '../theme.dart';
@@ -55,7 +56,8 @@ class CategoryPage extends StatelessWidget {
                   count: r.ratingCount,
                   distance: r.distance,
                   onTap: () {
-                    Navigator.pushNamed(context, '/restaurant/${r.id}');
+                  
+                    context.push('/restaurant/${r.id}');
                   },
                 )),
         ],
