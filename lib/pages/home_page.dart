@@ -6,6 +6,7 @@ import '../data/sample_data.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../theme.dart';
+import 'category_page.dart'; // Import the category page
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -115,25 +116,69 @@ class _HomePageState extends State<HomePage> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                children: const [
+                children: [
                   CategoryChip(
                     label: 'Pizza',
                     iconAsset: 'assets/icons/pizza.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CategoryPage(
+                            categoryName: 'Pizza',
+                            iconAsset: 'assets/icons/pizza.png',
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   CategoryChip(
                     label: 'Chinese',
                     iconAsset: 'assets/icons/chinese.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CategoryPage(
+                            categoryName: 'Chinese',
+                            iconAsset: 'assets/icons/chinese.png',
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   CategoryChip(
                     label: 'Japanese',
                     iconAsset: 'assets/icons/japanese.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CategoryPage(
+                            categoryName: 'Japanese',
+                            iconAsset: 'assets/icons/japanese.png',
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   CategoryChip(
                     label: 'Dessert',
                     iconAsset: 'assets/icons/dessert.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CategoryPage(
+                            categoryName: 'Dessert',
+                            iconAsset: 'assets/icons/dessert.png',
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
