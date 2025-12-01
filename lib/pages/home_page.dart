@@ -3,8 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../widgets/category_chip.dart';
 import '../widgets/restaurant_card.dart';
 import '../data/sample_data.dart';
-import 'package:provider/provider.dart';
-import '../providers/cart_provider.dart';
+import '../services/api_service.dart';
 import '../theme.dart';
 import 'category_page.dart'; // Import the category page
 
@@ -18,7 +17,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _controller = TextEditingController();
   String _q = '';
-  bool _refreshing = false;
+  bool _loading = true;
+  String? _error;
+  List<RestaurantLite> _restaurants = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRestaurants();
+  }
 
   @override
   void dispose() {
@@ -26,16 +33,34 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  Future<void> _fetchRestaurants() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    try {
+      final data = await ApiService.getRestaurants();
+      setState(() {
+        _restaurants = data;
+        _loading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _loading = false;
+      });
+    }
+  }
+
   Future<void> _handleRefresh() async {
-    setState(() => _refreshing = true);
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() => _refreshing = false);
+    await _fetchRestaurants();
   }
 
   @override
   Widget build(BuildContext context) {
     final titleMedium = Theme.of(context).textTheme.titleMedium;
-    final filtered = restaurants.where((r) {
+    final filtered = _restaurants.where((r) {
       final q = _q.trim().toLowerCase();
       if (q.isEmpty) return true;
       final inName = r.name.toLowerCase().contains(q);
@@ -98,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  if (_refreshing)
+                  if (_loading)
                     const SizedBox(
                       width: 16,
                       height: 16,
@@ -198,7 +223,47 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 12),
 
-            if (_q.isNotEmpty && filtered.isEmpty)
+            // Error state
+            if (_error != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.cloud_off_rounded,
+                        size: 64,
+                        color: Colors.grey.shade300,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Failed to load restaurants',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Pull down to try again',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _fetchRestaurants,
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            // Empty search results
+            if (_error == null && _q.isNotEmpty && filtered.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                 child: Center(
@@ -231,7 +296,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-            ...filtered.map((r) {
+            // Restaurant list
+            if (_error == null) ...filtered.map((r) {
               return RestaurantCard(
                 title: r.name,
                 image: r.heroImage,

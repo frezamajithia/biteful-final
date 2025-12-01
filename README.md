@@ -1,103 +1,225 @@
-# 🍔 Biteful - Food Delivery App (made w GPT for now)
+# Biteful - Food Delivery App
 
-A modern, beautiful food delivery application built with Flutter. Browse restaurants, order food, track deliveries, and manage your orders with a smooth, intuitive interface.
+## Overview
 
-![Flutter](https://img.shields.io/badge/Flutter-3.9+-02569B?logo=flutter)
-![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?logo=dart)
-![License](https://img.shields.io/badge/license-MIT-green)
+Biteful is a full-featured food delivery mobile application built with Flutter. This project demonstrates modern mobile development practices including state management, local database persistence, RESTful API integration, push notifications, and a polished user interface following Material Design 3 guidelines.
 
-## ✨ Features (need polishing)
+The app allows users to browse restaurants by category, view menus, add items to a cart, complete checkout with delivery/pickup options, track orders in real-time, and manage their profile settings including addresses and payment methods.
 
-- 🏪 **Browse Restaurants** - Explore various restaurants with ratings and delivery info
-- 🍕 **Menu Navigation** - View detailed menus with appetizers, mains, and drinks
-- 🛒 **Shopping Cart** - Add items to cart with quantity management
-- 💳 **Checkout Flow** - Choose delivery method and place orders & time.
-- 📦 **Order Tracking** - Track your orders with detailed status updates
-- 📱 **Order History** - View all past orders with full details
-- 🔔 **Push Notifications** - Get notified when orders are placed
-- 👤 **User Profile** - Manage notification preferences and settings
-- 🎨 **Modern UI** - Beautiful Material Design 3 interface with custom theming
+---
 
-## 📱 Screenshots
+## Features
 
-*(Add screenshots here once you have them)*
+### Restaurant Browsing
+- Home screen with horizontally scrollable category chips (Fast Food, Japanese, Pizza, Chinese, Mexican, Dessert, Healthy)
+- Category pages displaying filtered restaurant listings
+- Restaurant cards showing name, rating, delivery time, delivery fee, and distance
+- High-quality food imagery from Unsplash
 
-## 🚀 Getting Started
+### Restaurant Details
+- Hero image header with restaurant branding
+- Delivery info card showing ETA, fees, rating, and distance
+- Full menu display with item descriptions and prices
+- Add to cart functionality with quantity selection
+
+### Shopping Cart
+- Real-time cart management with add/remove/update quantities
+- Restaurant-specific cart (clears when switching restaurants)
+- Itemized price breakdown with subtotal, taxes, and fees
+- Persistent cart state using Provider
+
+### Checkout Flow
+- Delivery method selection (Delivery or Pickup)
+- Delivery time selection (ASAP or scheduled)
+- Address selection from saved addresses
+- Payment method selection
+- Order summary with final total
+- Order confirmation with push notification
+
+### Order Management
+- Order history page showing all past orders
+- Order details with itemized breakdown
+- Order status tracking (Placed, Preparing, On the Way, Delivered)
+- Real-time order tracking page with animated progress indicators
+- Map placeholder for delivery tracking
+- Clear order history functionality
+
+### User Profile
+- Editable saved addresses (add, edit, delete, set default)
+- Editable payment methods (Visa, Mastercard, PayPal, Apple Pay)
+- Notification preferences toggle
+- Push notification testing
+- Database reset option
+
+### Notifications
+- Local push notifications on order placement
+- Notification permission handling
+- Configurable notification preferences
+
+---
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Framework | Flutter 3.9+ |
+| Language | Dart 3.0+ |
+| State Management | Provider |
+| Navigation | GoRouter |
+| Local Database | SQLite (sqflite) |
+| HTTP Client | http package |
+| Notifications | flutter_local_notifications |
+| Permissions | permission_handler |
+| Date Formatting | intl |
+| Fonts | Google Fonts (Amiko, Mogra, Inter) |
+| UI | Material Design 3 |
+
+---
+
+## Project Structure
+
+```
+lib/
+├── data/
+│   └── sample_data.dart       # Restaurant and menu data models
+├── db/
+│   └── database_helper.dart   # SQLite database operations
+├── models/
+│   ├── order.dart             # Order data model
+│   └── order_item.dart        # Order item data model
+├── pages/
+│   ├── home_page.dart         # Main home screen
+│   ├── category_page.dart     # Category filtered listings
+│   ├── restaurant_page.dart   # Restaurant details and menu
+│   ├── cart_page.dart         # Shopping cart
+│   ├── checkout_page.dart     # Checkout flow
+│   ├── payment_page.dart      # Payment processing
+│   ├── orders_page.dart       # Order history
+│   ├── track_page.dart        # Order tracking
+│   ├── profile_page.dart      # User profile
+│   ├── addresses_page.dart    # Address management
+│   ├── payment_methods_page.dart # Payment method management
+│   └── shell_home.dart        # Bottom navigation shell
+├── providers/
+│   └── cart_provider.dart     # Cart state management
+├── services/
+│   ├── api_service.dart       # HTTP API calls
+│   └── notification_service.dart # Push notifications
+├── widgets/
+│   ├── category_chip.dart     # Category selection chips
+│   └── restaurant_card.dart   # Restaurant display cards
+├── main.dart                  # App entry point
+├── router.dart                # GoRouter configuration
+└── theme.dart                 # App theming and colors
+```
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
-- Flutter SDK (3.9 or higher)
-- Dart SDK (3.0 or higher)
-- iOS Simulator (Mac) or Android Emulator
-- Xcode (for iOS development on Mac)
+- Flutter SDK 3.9 or higher
+- Dart SDK 3.0 or higher
+- Xcode (for iOS development on macOS)
 - Android Studio or VS Code with Flutter extensions
+- iOS Simulator or Android Emulator with Android Studio
 
 ### Installation
 
-1. **Clone the repository**
+1. Clone the repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/biteful-app.git
-   cd biteful-app
+   git clone <repository-url>
+   cd biteful-final
    ```
 
-2. **Install dependencies**
+2. Install dependencies:
    ```bash
    flutter pub get
    ```
 
-3. **Run the app**
-   
-   **iOS (Mac only):**
+3. Run the app:
    ```bash
    flutter run
    ```
-   
-   **Android:**
+
+   To run on a specific device:
    ```bash
-   flutter run
-   ```
-   
-   **Specific device:**
-   ```bash
-   flutter devices  # List available devices
-   flutter run -d <device-id>
+   flutter devices          # List available devices
+   flutter run -d <device>  # Run on specific device
    ```
 
-### First Run
+### First Launch
 
-On first launch:
 1. Grant notification permissions when prompted
-2. The app will initialize the local database
-3. Browse sample restaurants and place your first order!
+2. The app will initialize the local SQLite database automatically
+3. Browse restaurants and place an order to test the full flow
 
-## 🏗️ Project Structure
+---
 
+## API Integration
+
+The app integrates with MockAPI.io for order management:
+
+- **Base URL:** `https://692e04bae5f67cd80a4dab4e.mockapi.io`
+- **POST /orders:** Create a new order
+- **GET /orders:** Retrieve all orders
+
+Restaurant data is loaded from local sample data for consistency and offline capability.
+
+---
+
+## Database Schema
+
+### Orders Table
+| Column | Type | Description |
+|--------|------|-------------|
+| id | TEXT | Primary key (UUID) |
+| restaurantName | TEXT | Name of restaurant |
+| status | TEXT | Order status |
+| total | REAL | Order total |
+| date | TEXT | ISO 8601 timestamp |
+
+### Order Items Table
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key (auto-increment) |
+| orderId | TEXT | Foreign key to orders |
+| title | TEXT | Item name |
+| price | REAL | Item price |
+| quantity | INTEGER | Item quantity |
+
+---
+
+## Troubleshooting
+
+**Blank screen on launch:**
+```bash
+flutter clean
+flutter pub get
+flutter run
 ```
-lib/
-├── data/           # Sample data and models
-├── db/             # SQLite database helper
-├── models/         # Data models (Order, OrderItem)
-├── pages/          # All app screens
-├── providers/      # State management (Cart)
-├── services/       # Notification service
-├── widgets/        # Reusable UI components
-├── main.dart       # App entry point
-├── router.dart     # Navigation configuration
-└── theme.dart      # App theming
+
+**Notifications not appearing:**
+- Ensure notification permissions are granted in device settings
+- Use the "Test notification" button in Profile to verify
+
+**Database errors:**
+- Use "Reset Database" in Profile page
+- Or reinstall the app to recreate the database
+
+**Build errors:**
+```bash
+flutter clean
+rm -rf ios/Pods ios/Podfile.lock
+flutter pub get
+cd ios && pod install && cd ..
+flutter run
 ```
 
-## 🛠️ Tech Stack
+---
 
-- **Framework:** Flutter 3.9+
-- **Language:** Dart 3.0+
-- **State Management:** Provider
-- **Navigation:** GoRouter
-- **Local Database:** SQLite (sqflite)
-- **Notifications:** flutter_local_notifications
-- **UI Components:** Material Design 3
-- **Fonts:** Google Fonts (Amiko, Mogra, Inter)
-
-## 📦 Key Dependencies
+## Dependencies
 
 ```yaml
 dependencies:
@@ -110,94 +232,12 @@ dependencies:
   permission_handler: ^11.3.1
   sqflite: ^2.4.1
   intl: ^0.19.0
-  flutter_svg: ^2.0.10+1
+  http: ^1.2.0
+  path_provider: ^2.1.2
 ```
-
-## 🎨 Features in Detail
-
-### Restaurant Browsing
-- Grid layout with restaurant cards
-- Rating system with star display
-- Delivery time and fee information
-- Distance calculation
-
-### Cart Management
-- Add/remove items with quantity control
-- Restaurant-specific cart (prevents mixing orders)
-- Real-time total calculation with taxes
-- Persistent cart state
-
-### Order System
-- SQLite database for order persistence
-- Order status tracking (Placed, Delivery, Pickup)
-- Order history with full details
-- Clear all orders functionality
-
-### Notifications
-- Local push notifications
-- Order confirmation alerts
-- Customizable notification preferences
-- Test notification feature
-
-## 🔧 Configuration
-
-### iOS Setup
-Notifications are pre-configured in `ios/Runner/Info.plist` with:
-- Alert permissions
-- Badge permissions
-- Sound permissions
-- Background modes
-
-### Android Setup
-No additional configuration needed. Notification channels are automatically created.
-
-## 🐛 Troubleshooting
-
-**App shows blank screen on launch:**
-- Make sure to run `flutter clean` and `flutter pub get`
-- Restart the simulator/emulator
-
-**Notifications not appearing:**
-- Grant notification permissions in system settings
-- Try the "Test notification" button in Profile → Notifications
-
-**Database errors:**
-- Use the "Reset Database" button in Profile page
-- Or reinstall the app to recreate the database
-
-**Build errors:**
-```bash
-flutter clean
-flutter pub get
-flutter run
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👨‍💻 Author
-
-**Your Name**
-- GitHub: [@YOUR_USERNAME](https://github.com/YOUR_USERNAME)
-
-## 🙏 Acknowledgments
-
-- Restaurant images from sample data
-- Icons from Material Design
-- Fonts from Google Fonts
-- Flutter team for the amazing framework
 
 ---
 
-Made with ❤️ and Flutter
+## License
+
+This project is for educational purposes.

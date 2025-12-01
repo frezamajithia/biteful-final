@@ -6,6 +6,7 @@ import '../providers/cart_provider.dart';
 import '../db/database_helper.dart';
 import '../models/order.dart';
 import '../models/order_item.dart';
+import '../services/api_service.dart';
 import 'package:intl/intl.dart';
 import '../services/notify.dart';
 import '../theme.dart';
@@ -122,12 +123,25 @@ class _CheckoutPageState extends State<CheckoutPage> {
         .toList();
 
     try {
+      // Save to local database
       final db = DatabaseHelper.instance;
       final orderId = await db.insertOrder(order);
-      
+
       for (final item in orderItems) {
         await db.insertOrderItem(orderId, item);
       }
+
+      // POST to remote API
+      await ApiService.createOrder(
+        restaurantName: order.restaurantName,
+        items: orderItems.map((item) => {
+          'name': item.itemName,
+          'quantity': item.quantity,
+          'price': item.unitPrice,
+        }).toList(),
+        total: order.total,
+        status: order.status,
+      );
 
       cart.clear();
 
