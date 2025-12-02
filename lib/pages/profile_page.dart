@@ -114,61 +114,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
           const SizedBox(height: 26),
 
-          // Reset Database Button
-          Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            decoration: BoxDecoration(
-              color: Colors.red.shade50,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.red.shade200),
-            ),
-            child: ListTile(
-              leading: const Icon(Icons.delete_forever, size: 26, color: Colors.red),
-              title: const Text(
-                'Reset Database (Debug)',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.red),
-              ),
-              subtitle: const Text(
-                'Fix database errors - App will restart',
-                style: TextStyle(fontSize: 12),
-              ),
-              trailing: const Icon(Icons.warning, color: Colors.orange),
-              onTap: () async {
-                final confirm = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Reset Database?'),
-                    content: const Text('This will delete all orders and fix database errors. App will close after reset.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, false),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, true),
-                        style: TextButton.styleFrom(foregroundColor: Colors.red),
-                        child: const Text('Reset'),
-                      ),
-                    ],
-                  ),
-                );
-                
-                if (confirm == true) {
-                  await DatabaseHelper.instance.deleteDatabase();
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Database reset! Please close and reopen the app.'),
-                        duration: Duration(seconds: 3),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  }
-                }
-              },
-            ),
-          ),
-          
           // Favorites section
           Consumer<FavoritesProvider>(
             builder: (context, favorites, _) {
