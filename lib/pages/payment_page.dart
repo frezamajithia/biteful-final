@@ -226,16 +226,22 @@ class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStat
                     }),
 
                     // Add new card option
+                    // Add new card option (Navigates to Manager)
                     GestureDetector(
-                      onTap: () => setState(() => _selectedCardIndex = -1),
+                      onTap: () async {
+                        // Push to the Payment Methods page
+                        await context.push('/payment-methods');
+                        // When they come back, refresh the state (in a real app you'd fetch cards again)
+                        setState(() {});
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: _selectedCardIndex == -1 ? kPrimary.withValues(alpha: 0.05) : Colors.white,
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: _selectedCardIndex == -1 ? kPrimary : Colors.grey.shade200,
-                            width: _selectedCardIndex == -1 ? 2 : 1,
+                            color: Colors.grey.shade200,
+                            width: 1,
                           ),
                         ),
                         child: Row(
@@ -250,212 +256,20 @@ class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStat
                             ),
                             const SizedBox(width: 16),
                             const Text(
-                              'Add New Card',
+                              'Manage Cards', // Renamed to be more accurate
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
                             ),
                             const Spacer(),
-                            Radio<int>(
-                              value: -1,
-                              groupValue: _selectedCardIndex,
-                              activeColor: kPrimary,
-                              onChanged: (value) => setState(() => _selectedCardIndex = value!),
-                            ),
+                            const Icon(Icons.chevron_right, color: Colors.grey),
                           ],
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
                   ],
-
-                  // New Card Form
-                  if (_selectedCardIndex == -1) ...[
-                    const Text(
-                      'Card Details',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Form(
-                      key: _formKey,
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            // Card Number
-                            TextFormField(
-                              controller: _cardNumberController,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(16),
-                                _CardNumberFormatter(),
-                              ],
-                              decoration: InputDecoration(
-                                labelText: 'Card Number',
-                                hintText: '1234 5678 9012 3456',
-                                prefixIcon: Icon(
-                                  _getCardIcon(_getCardBrand(cardNumber)),
-                                  color: kPrimary,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey.shade300),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: const BorderSide(color: kPrimary, width: 2),
-                                ),
-                              ),
-                              onChanged: (_) => setState(() {}),
-                              validator: (value) {
-                                if (value == null || value.replaceAll(' ', '').length < 16) {
-                                  return 'Enter a valid card number';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 16),
-
-                            // Cardholder Name
-                            TextFormField(
-                              controller: _nameController,
-                              textCapitalization: TextCapitalization.words,
-                              decoration: InputDecoration(
-                                labelText: 'Cardholder Name',
-                                hintText: 'John Doe',
-                                prefixIcon: const Icon(Icons.person_outline, color: kPrimary),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey.shade300),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: const BorderSide(color: kPrimary, width: 2),
-                                ),
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Enter cardholder name';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 16),
-
-                            // Expiry and CVV
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _expiryController,
-                                    keyboardType: TextInputType.number,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                      LengthLimitingTextInputFormatter(4),
-                                      _ExpiryDateFormatter(),
-                                    ],
-                                    decoration: InputDecoration(
-                                      labelText: 'Expiry',
-                                      hintText: 'MM/YY',
-                                      prefixIcon: const Icon(Icons.calendar_today, color: kPrimary),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: const BorderSide(color: kPrimary, width: 2),
-                                      ),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.length < 5) {
-                                        return 'Invalid';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _cvvController,
-                                    keyboardType: TextInputType.number,
-                                    obscureText: true,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                      LengthLimitingTextInputFormatter(4),
-                                    ],
-                                    decoration: InputDecoration(
-                                      labelText: 'CVV',
-                                      hintText: '123',
-                                      prefixIcon: const Icon(Icons.lock_outline, color: kPrimary),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: const BorderSide(color: kPrimary, width: 2),
-                                      ),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.length < 3) {
-                                        return 'Invalid';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-
-                            // Save card checkbox
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: _saveCard,
-                                  activeColor: kPrimary,
-                                  onChanged: (value) => setState(() => _saveCard = value!),
-                                ),
-                                const Text('Save card for future payments'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-
-                  const SizedBox(height: 24),
 
                   // Security note
                   Container(
