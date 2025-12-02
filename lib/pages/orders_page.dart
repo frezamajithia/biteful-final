@@ -234,44 +234,53 @@ class _OrdersPageState extends State<OrdersPage> {
             ),
             const SizedBox(height: 12),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Total: \$${order.total.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: kPrimary,
+                Expanded(
+                  child: Text(
+                    'Total: \$${order.total.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: kPrimary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Reorder button
                     TextButton.icon(
                       onPressed: () => _handleReorder(order),
-                      icon: const Icon(Icons.replay, size: 18),
-                      label: const Text('Reorder'),
+                      icon: const Icon(Icons.replay, size: 16),
+                      label: const Text('Reorder', style: TextStyle(fontSize: 13)),
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.green,
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                     ),
-                    // Track button
+                    const SizedBox(width: 8),
                     TextButton.icon(
                       onPressed: () {
                         if (order.id != null) {
                           context.push('/track/${order.id}');
                         }
                       },
-                      icon: const Icon(Icons.location_on, size: 18),
-                      label: const Text('Track'),
+                      icon: const Icon(Icons.location_on, size: 16),
+                      label: const Text('Track', style: TextStyle(fontSize: 13)),
                       style: TextButton.styleFrom(
                         foregroundColor: kPrimary,
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                     ),
                   ],
                 ),
               ],
             ),
+
           ],
         ),
       ),
