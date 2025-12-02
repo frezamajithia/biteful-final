@@ -5,15 +5,22 @@ import 'package:provider/provider.dart';
 import 'router.dart';
 import 'theme.dart';
 import 'providers/cart_provider.dart';
+import 'providers/favorites_provider.dart';
 import 'services/notify.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Notify.instance.init(); // ✅ FIXED: Added .instance
+  await Notify.instance.init();
+
+  // Initialize favorites provider
+  final favoritesProvider = FavoritesProvider();
+  await favoritesProvider.init();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider.value(value: favoritesProvider),
       ],
       child: const BitefulApp(),
     ),

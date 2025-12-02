@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart'; // ✅ ADD THIS IMPORT
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../db/database_helper.dart';
 import '../models/order.dart';
+import '../providers/cart_provider.dart';
 import '../theme.dart';
 
 class OrdersPage extends StatefulWidget {
@@ -29,6 +31,52 @@ class _OrdersPageState extends State<OrdersPage> {
       _orders = orders;
       _loading = false;
     });
+  }
+
+  Future<void> _handleReorder(Order order) async {
+    if (order.id == null) return;
+
+    // Fetch order items
+    final items = await DatabaseHelper.instance.fetchOrderItemsAsModels(order.id!);
+
+    if (items.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No items found for this order')),
+        );
+      }
+      return;
+    }
+
+    // Convert to reorder format
+    final reorderItems = items.map((item) => {
+      'name': item.itemName,
+      'price': item.unitPrice,
+      'quantity': item.quantity,
+    }).toList();
+
+    if (!mounted) return;
+
+    // Add to cart
+    final cart = context.read<CartProvider>();
+    cart.reorder(
+      restaurantName: order.restaurantName,
+      items: reorderItems,
+    );
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Added ${items.length} items from ${order.restaurantName}'),
+          backgroundColor: Colors.green,
+          action: SnackBarAction(
+            label: 'View Cart',
+            textColor: Colors.white,
+            onPressed: () => context.push('/cart'),
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> _clearAll() async {
@@ -196,17 +244,31 @@ class _OrdersPageState extends State<OrdersPage> {
                     color: kPrimary,
                   ),
                 ),
-                TextButton.icon(
-                  onPressed: () {
-                    if (order.id != null) {
-                      context.push('/track/${order.id}');
-                    }
-                  },
-                  icon: const Icon(Icons.location_on, size: 18),
-                  label: const Text('Track'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: kPrimary,
-                  ),
+                Row(
+                  children: [
+                    // Reorder button
+                    TextButton.icon(
+                      onPressed: () => _handleReorder(order),
+                      icon: const Icon(Icons.replay, size: 18),
+                      label: const Text('Reorder'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.green,
+                      ),
+                    ),
+                    // Track button
+                    TextButton.icon(
+                      onPressed: () {
+                        if (order.id != null) {
+                          context.push('/track/${order.id}');
+                        }
+                      },
+                      icon: const Icon(Icons.location_on, size: 18),
+                      label: const Text('Track'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: kPrimary,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

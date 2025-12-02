@@ -5,36 +5,18 @@ import '../data/sample_data.dart';
 class ApiService {
   static const String baseUrl = 'https://692e04bae5f67cd80a4dab4e.mockapi.io';
 
-  // GET all restaurants
+  // GET all restaurants - uses local data only for consistency
   static Future<List<RestaurantLite>> getRestaurants() async {
-    try {
-      final response = await http.get(Uri.parse('$baseUrl/restaurants'));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> jsonList = json.decode(response.body);
-        return jsonList.map((json) => RestaurantLite.fromJson(json)).toList();
-      } else {
-        throw Exception('Failed to load restaurants: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to connect to server: $e');
-    }
+    return restaurants;
   }
 
-  // GET single restaurant by ID
+  // GET single restaurant by ID - uses local data only
   static Future<RestaurantLite> getRestaurant(String id) async {
-    try {
-      final response = await http.get(Uri.parse('$baseUrl/restaurants/$id'));
-
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        return RestaurantLite.fromJson(json);
-      } else {
-        throw Exception('Failed to load restaurant: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to connect to server: $e');
+    final localMatch = restaurants.where((r) => r.id == id).toList();
+    if (localMatch.isNotEmpty) {
+      return localMatch.first;
     }
+    throw Exception('Restaurant not found: $id');
   }
 
   // POST a new order

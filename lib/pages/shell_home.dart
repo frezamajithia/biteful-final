@@ -30,6 +30,8 @@ class _HomeShellState extends State<HomeShell> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: kPrimary,
+        foregroundColor: Colors.white,
         title: _index == 0
             ? RichText(
                 text: const TextSpan(
@@ -40,18 +42,26 @@ class _HomeShellState extends State<HomeShell> {
                     height: 1.2,
                   ),
                   children: [
-                    TextSpan(text: 'B', style: TextStyle(fontSize: 38)),
-                    TextSpan(text: 'iteful', style: TextStyle(fontSize: 30)),
+                    TextSpan(text: 'B', style: TextStyle(fontSize: 32)),
+                    TextSpan(text: 'iteful', style: TextStyle(fontSize: 26)),
                   ],
                 ),
               )
-            : Text(titles[_index]),
+            : Text(
+                titles[_index],
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: _index == 0
             ? [
                 Stack(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.shopping_cart_outlined),
+                      icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
                       onPressed: () => context.push('/cart'),
                     ),
                     if (cart.totalItems > 0)
@@ -85,6 +95,22 @@ class _HomeShellState extends State<HomeShell> {
             : null,
       ),
       body: IndexedStack(index: _index, children: _pages),
+
+      // Floating cart button when items in cart
+      floatingActionButton: cart.totalItems > 0
+          ? FloatingActionButton.extended(
+              onPressed: () => context.push('/cart'),
+              backgroundColor: kPrimary,
+              icon: const Icon(Icons.shopping_cart, color: Colors.white),
+              label: Text(
+                '\$${cart.total.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            )
+          : null,
 
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

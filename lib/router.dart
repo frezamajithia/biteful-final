@@ -3,8 +3,10 @@ import 'pages/splash_page.dart';
 import 'pages/shell_home.dart';
 import 'pages/home_page.dart';
 import 'pages/restaurant_page.dart';
+import 'pages/category_page.dart';
 import 'pages/cart_page.dart';
 import 'pages/checkout_page.dart';
+import 'pages/payment_page.dart';
 import 'pages/order_confirmed_page.dart';
 import 'pages/orders_page.dart';
 import 'pages/profile_page.dart';
@@ -39,12 +41,27 @@ GoRouter buildRouter() {
         },
       ),
       GoRoute(
+        path: '/category/:name',
+        builder: (context, state) {
+          final name = state.pathParameters['name']!;
+          final iconAsset = state.uri.queryParameters['icon'] ?? 'assets/icons/food.png';
+          return CategoryPage(categoryName: name, iconAsset: iconAsset);
+        },
+      ),
+      GoRoute(
         path: '/cart',
         builder: (context, state) => const CartPage(),
       ),
       GoRoute(
         path: '/checkout',
         builder: (context, state) => const CheckoutPage(),
+      ),
+      GoRoute(
+        path: '/payment/:amount',
+        builder: (context, state) {
+          final amount = double.tryParse(state.pathParameters['amount'] ?? '0') ?? 0;
+          return PaymentPage(amount: amount);
+        },
       ),
       GoRoute(
         path: '/order-confirmed/:id',

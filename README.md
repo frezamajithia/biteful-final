@@ -123,7 +123,7 @@ lib/
 - Dart SDK 3.0 or higher
 - Xcode (for iOS development on macOS)
 - Android Studio or VS Code with Flutter extensions
-- iOS Simulator or Android Emulator with Android Studio
+- iOS Simulator or Android Emulator via Android Studio
 
 ### Installation
 

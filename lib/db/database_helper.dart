@@ -140,6 +140,17 @@ class DatabaseHelper {
     );
   }
 
+  // Fetch order items as OrderItem models
+  Future<List<OrderItem>> fetchOrderItemsAsModels(int orderId) async {
+    final db = await database;
+    final maps = await db.query(
+      'order_items',
+      where: 'orderId = ?',
+      whereArgs: [orderId],
+    );
+    return maps.map((map) => OrderItem.fromMap(map)).toList();
+  }
+
   // Clear all orders and order items
   Future<void> clearOrders() async {
     final db = await database;

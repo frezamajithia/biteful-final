@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/favorites_provider.dart';
 import '../theme.dart';
 
 class RestaurantCard extends StatelessWidget {
+  final String id;
   final String title;
   final String image;
   final String eta;
@@ -13,6 +16,7 @@ class RestaurantCard extends StatelessWidget {
 
   const RestaurantCard({
     super.key,
+    required this.id,
     required this.title,
     required this.image,
     required this.eta,
@@ -42,21 +46,102 @@ class RestaurantCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Image.asset(
-                  image,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey.shade100,
-                      alignment: Alignment.center,
-                      child: Icon(Icons.image_not_supported,
-                          size: 48, color: Colors.grey.shade400),
-                    );
-                  },
-                ),
+              Stack(
+                children: [
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: image.startsWith('http')
+                        ? Image.network(
+                            image,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                color: Colors.grey.shade100,
+                                alignment: Alignment.center,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: kPrimary,
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey.shade100,
+                                alignment: Alignment.center,
+                                child: Icon(Icons.restaurant,
+                                    size: 48, color: Colors.grey.shade400),
+                              );
+                            },
+                          )
+                        : Image.asset(
+                            image,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey.shade100,
+                                alignment: Alignment.center,
+                                child: Icon(Icons.image_not_supported,
+                                    size: 48, color: Colors.grey.shade400),
+                              );
+                            },
+                          ),
+                  ),
+                  // Favorite button
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Consumer<FavoritesProvider>(
+                      builder: (context, favorites, _) {
+                        final isFav = favorites.isFavorite(id);
+                        return GestureDetector(
+                          onTap: () {
+                            favorites.toggleFavorite(
+                              id: id,
+                              name: title,
+                              image: image,
+                              rating: rating,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  isFav ? 'Removed from favorites' : 'Added to favorites',
+                                ),
+                                duration: const Duration(seconds: 1),
+                                behavior: SnackBarBehavior.floating,
+                                backgroundColor: isFav ? Colors.grey : kPrimary,
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              color: isFav ? Colors.red : Colors.grey,
+                              size: 22,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.all(16),

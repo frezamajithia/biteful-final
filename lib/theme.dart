@@ -57,18 +57,46 @@ ThemeData buildBitefulTheme({
     ),
 
     appBarTheme: AppBarTheme(
-      backgroundColor: kPrimary,
-      foregroundColor: kHighlight,
-      centerTitle: true,
-      titleTextStyle: GoogleFonts.mogra(
-        fontSize: 28,
-        fontWeight: FontWeight.w600,
-        color: kHighlight,
-        letterSpacing: 0.8,
+      backgroundColor: Colors.transparent,
+      foregroundColor: kTextDark,
+      centerTitle: false,
+      scrolledUnderElevation: 0,
+      titleTextStyle: GoogleFonts.inter(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: kTextDark,
+        letterSpacing: -0.3,
       ),
-      iconTheme: const IconThemeData(color: kHighlight, size: 26),
+      iconTheme: const IconThemeData(color: kTextDark, size: 24),
       elevation: 0,
       shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+    ),
+
+    dialogTheme: DialogThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 0,
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      titleTextStyle: GoogleFonts.inter(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: kTextDark,
+      ),
+      contentTextStyle: GoogleFonts.inter(
+        fontSize: 15,
+        color: Colors.grey.shade600,
+        height: 1.4,
+      ),
+    ),
+
+    bottomSheetTheme: const BottomSheetThemeData(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
     ),
 
     cardTheme: CardThemeData(
