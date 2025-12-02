@@ -205,7 +205,7 @@ flutter run
 - Use the "Test notification" button in Profile to verify
 
 **Database errors:**
-- Use "Reset Database" in Profile page
+- Use "Clear All" in 'Orders' history page
 - Or reinstall the app to recreate the database
 
 **Build errors:**
