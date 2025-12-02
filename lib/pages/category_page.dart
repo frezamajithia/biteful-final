@@ -22,17 +22,22 @@ class _CategoryPageState extends State<CategoryPage> {
   String _sortBy = 'rating';
 
   List<RestaurantLite> get _filteredRestaurants {
-    var list = restaurants
-        .where((r) => r.category.toLowerCase() == widget.categoryName.toLowerCase())
-        .toList();
+    var list = restaurants.where((r) {
+    
+      if (widget.categoryName.toLowerCase() == 'american') {
+        return r.category.toLowerCase() == 'american' || 
+               r.category.toLowerCase() == 'pizza' ||
+               r.category.toLowerCase() == 'burger';
+      }
+      return r.category.toLowerCase() == widget.categoryName.toLowerCase();
+    }).toList();
 
-    // Sort based on selection
+    
     switch (_sortBy) {
       case 'rating':
         list.sort((a, b) => b.rating.compareTo(a.rating));
         break;
       case 'distance':
-        // Parse distance string to compare (e.g., "1.2 mi")
         list.sort((a, b) {
           final distA = double.tryParse(a.distance.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0;
           final distB = double.tryParse(b.distance.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0;
@@ -40,7 +45,6 @@ class _CategoryPageState extends State<CategoryPage> {
         });
         break;
       case 'delivery':
-        // Parse ETA string to compare (e.g., "20-30 min")
         list.sort((a, b) {
           final etaA = int.tryParse(a.eta.split('-').first) ?? 0;
           final etaB = int.tryParse(b.eta.split('-').first) ?? 0;
