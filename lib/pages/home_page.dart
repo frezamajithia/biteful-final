@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: ['All', 'Pizza', 'Chinese', 'Japanese', 'Dessert', 'American', 'Mexican']
+                children: ['All', 'Chinese', 'Japanese', 'Dessert', 'American', 'Mexican']
                     .map((cuisine) => ChoiceChip(
                           label: Text(cuisine),
                           selected: _selectedCuisine == (cuisine == 'All' ? null : cuisine),
@@ -389,15 +389,15 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   CategoryChip(
-                    label: 'Pizza',
-                    iconAsset: 'assets/icons/pizza.png',
+                    label: 'American',
+                    iconAsset: 'assets/icons/american.png',
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => const CategoryPage(
-                            categoryName: 'Pizza',
-                            iconAsset: 'assets/icons/pizza.png',
+                            categoryName: 'American',
+                            iconAsset: 'assets/icons/american.png',
                           ),
                         ),
                       );
