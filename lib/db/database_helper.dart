@@ -127,9 +127,7 @@ class DatabaseHelper {
   Future<List<Order>> fetchOrdersAsModels() async {
     final db = await database;
     final maps = await db.query('orders', orderBy: 'createdAt DESC');
-    // Assuming Order.fromMap is defined in models/order.dart
-    // return maps.map((map) => Order.fromMap(map)).toList();
-    return []; // Placeholder to avoid external dependency error
+    return maps.map((map) => Order.fromMap(map)).toList();
   }
 
   // Fetch order items for a specific order
